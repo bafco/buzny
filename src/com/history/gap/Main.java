@@ -7,8 +7,7 @@ package com.history.gap;
 public class Main {
 
     public static void main(String[] args) {
-        Stock stock = GapParser.generateStockFromFile("D:\\buzny\\p.txt");
-        System.out.println(stock.name);
-        System.out.println(stock.getAverageReturn());
+        Stock stock = GapParser.generateStockFromFile("D:\\buzny\\nflx.txt");
+        System.out.println(stock);
     }
 }

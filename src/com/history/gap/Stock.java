@@ -10,6 +10,8 @@ import java.util.List;
  */
 public class Stock {
 
+    public static final String newline = System.getProperty("line.separator");
+
     final String name;
 
     private List<Gap> gaps = new ArrayList<>();
@@ -34,12 +36,23 @@ public class Stock {
     /**
      * Compute expected profit in % (single profit = max(|gap| - 5, 0))
      */
-    public float getAverageReturn() {
+    public float getAverageProfit() {
         float result = 0;
         for (Gap gap : gaps) {
             result += gap.profit;
         }
         result = result / gaps.size();
         return result;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder(name).append(newline);
+        sb.append("Average profit: ").append(getAverageProfit()).append(newline);
+        sb.append("Gaps:").append(newline);
+        for (Gap gap : gaps) {
+            sb.append(gap.toString()).append(newline);
+        }
+        return sb.toString();
     }
 }

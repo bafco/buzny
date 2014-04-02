@@ -1,5 +1,7 @@
 package com.history.gap;
 
+import java.text.DecimalFormat;
+
 /**
  *
  * @author Matúš
@@ -19,5 +21,12 @@ public class Gap {
         secondDayOpen = open;
         gap = (firstDayClose - secondDayOpen) / firstDayClose * 100;
         profit = Math.max(Math.abs(gap) - 5, 0);
+    }
+
+    @Override
+    public String toString() {
+        DecimalFormat df = new DecimalFormat();
+        df.setMaximumFractionDigits(2);
+        return df.format(gap);
     }
 }
