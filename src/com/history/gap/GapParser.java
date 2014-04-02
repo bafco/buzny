@@ -42,7 +42,7 @@ public class GapParser {
         String tab = "\t";
         String[] array1 = line1.split(tab, 7);
         String[] array2 = line2.split(tab, 7);
-        return new Gap(gimmeNumber(array2[6]), gimmeNumber(array1[1]));
+        return new Gap(gimmeNumber(array2[4]), gimmeNumber(array1[1]));
     }
 
     private static Float gimmeNumber(String s) {
