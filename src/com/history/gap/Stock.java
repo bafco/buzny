@@ -16,6 +16,8 @@ public class Stock {
 
     private List<Gap> gaps = new ArrayList<>();
 
+    private float averageGap = 0;
+
     public Stock(String name) {
         this.name = name;
     }
@@ -45,10 +47,38 @@ public class Stock {
         return result;
     }
 
+    /**
+     * @return average gap (can be negative)
+     */
+    public float getAverageGap() {
+        if (averageGap == 0) {
+            for (Gap gap : gaps) {
+                averageGap += gap.gap;
+            }
+            averageGap = averageGap / gaps.size();
+        }
+        return averageGap;
+    }
+
+    public double getStandardDeviation() {
+        return Math.sqrt(getVariance());
+    }
+
+    public double getVariance() {
+        double variance = 0;
+        for (Gap gap : gaps) {
+            variance += Math.pow(gap.gap - averageGap, 2);
+        }
+        variance = variance / gaps.size();
+        return variance;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(name).append(newline);
         sb.append("Average profit: ").append(getAverageProfit()).append(newline);
+//        sb.append("Average gap: ").append(getAverageGap()).append(newline);
+//        sb.append("Standard deviation: ").append(getStandardDeviation()).append(newline);
         sb.append("Gaps:").append(newline);
         for (Gap gap : gaps) {
             sb.append(gap.toString()).append(newline);

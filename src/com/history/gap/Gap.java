@@ -19,7 +19,7 @@ public class Gap {
     public Gap(float close, float open) {
         firstDayClose = close;
         secondDayOpen = open;
-        gap = (firstDayClose - secondDayOpen) / firstDayClose * 100;
+        gap = (secondDayOpen - firstDayClose) / firstDayClose * 100;
         profit = Math.max(Math.abs(gap) - 5, 0);
     }
 
