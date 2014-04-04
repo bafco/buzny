@@ -26,7 +26,8 @@ public class Gap {
     @Override
     public String toString() {
         DecimalFormat df = new DecimalFormat();
+        df.setMinimumFractionDigits(2);
         df.setMaximumFractionDigits(2);
-        return df.format(gap);
+        return String.format("%1$6s", df.format(gap));
     }
 }

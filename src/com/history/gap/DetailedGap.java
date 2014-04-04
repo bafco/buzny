@@ -1,6 +1,8 @@
 package com.history.gap;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  *
@@ -30,5 +32,11 @@ public class DetailedGap  extends Gap {
         secondDayClose = sdClose;
         this.firstDay = firstDay;
         this.secondDay = secondDay;
+    }
+
+    @Override
+    public String toString() {
+        SimpleDateFormat sdf = new SimpleDateFormat("d/MM/yyyy");
+        return super.toString() + " (date: " + sdf.format(firstDay) + " - " + sdf.format(secondDay) + ")";
     }
 }

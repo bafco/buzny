@@ -6,8 +6,10 @@ package com.history.gap;
  */
 public class Main {
 
+    private static final boolean DETAILED = true;
+
     public static void main(String[] args) {
-        Stock stock = GapParser.generateStockFromFile("D:\\buzny\\nflx.txt");
+        Stock stock = GapParser.generateStockFromFile("D:\\buzny\\nflx.txt", DETAILED);
         System.out.println(stock);
     }
 }
