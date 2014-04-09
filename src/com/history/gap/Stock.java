@@ -76,13 +76,13 @@ public class Stock {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(name).append(newline);
-        sb.append("Average profit: ").append(getAverageProfit()).append(newline);
-//        sb.append("Average gap: ").append(getAverageGap()).append(newline);
-//        sb.append("Standard deviation: ").append(getStandardDeviation()).append(newline);
         sb.append("Gaps:").append(newline);
         for (Gap gap : gaps) {
             sb.append(gap.toString()).append(newline);
         }
+        sb.append("Average profit: ").append(getAverageProfit()).append(newline);
+        sb.append("Average gap: ").append(getAverageGap()).append(newline);
+        // sb.append("Standard deviation (gap): ").append(getStandardDeviation()).append(newline);
         return sb.toString();
     }
 }

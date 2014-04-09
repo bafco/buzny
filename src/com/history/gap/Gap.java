@@ -8,6 +8,15 @@ import java.text.DecimalFormat;
  */
 public class Gap {
 
+    private static final int FRACTION_DIGITS = 2;
+
+    static DecimalFormat df = new DecimalFormat() {
+        {
+            setMinimumFractionDigits(FRACTION_DIGITS);
+            setMaximumFractionDigits(FRACTION_DIGITS);
+        };
+    };
+
     final float firstDayClose;
     final float secondDayOpen;
     /**
@@ -25,9 +34,11 @@ public class Gap {
 
     @Override
     public String toString() {
-        DecimalFormat df = new DecimalFormat();
-        df.setMinimumFractionDigits(2);
-        df.setMaximumFractionDigits(2);
-        return String.format("%1$6s", df.format(gap));
+        return format(gap);
+    }
+
+    protected String format(Float f) {
+        // 4 stands for potential minus sign, 2 digits and decimal point
+        return String.format("%1$" + (FRACTION_DIGITS + 4) + "s", f == null ? f : df.format(f));
     }
 }
