@@ -56,7 +56,7 @@ public class GapParser {
         String[] secondDay = line1.split(TAB, ROW_LENGTH);
         String[] firstDay = line2.split(TAB, ROW_LENGTH);
         return detailed ?
-                new DetailedGap(gimmeNumber(firstDay[CLOSE]), gimmeNumber(secondDay[OPEN]), gimmeNumber(secondDay[HIGH]), gimmeNumber(secondDay[LOW]), gimmeNumber(firstDay[CLOSE]), gimmeDate(firstDay[DATE]), gimmeDate(secondDay[DATE])) :
+                new DetailedGap(gimmeNumber(firstDay[CLOSE]), gimmeNumber(secondDay[OPEN]), gimmeNumber(secondDay[HIGH]), gimmeNumber(secondDay[LOW]), gimmeNumber(secondDay[CLOSE]), gimmeDate(firstDay[DATE]), gimmeDate(secondDay[DATE])) :
                 new Gap(gimmeNumber(firstDay[CLOSE]), gimmeNumber(secondDay[OPEN]));
     }
 
