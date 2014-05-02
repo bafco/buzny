@@ -8,6 +8,8 @@ import java.text.DecimalFormat;
  */
 public class Gap {
 
+    // gap (in %) needed for profit
+    private static final int TRESHOLD_GAP = 5;
     private static final int FRACTION_DIGITS = 2;
 
     static DecimalFormat df = new DecimalFormat() {
@@ -25,11 +27,17 @@ public class Gap {
     final float gap;
     final float profit;
 
+    final Float profitOnBuy;
+    final Float profitOnSell;
+
     public Gap(float close, float open) {
         firstDayClose = close;
         secondDayOpen = open;
         gap = (secondDayOpen - firstDayClose) / firstDayClose * 100;
-        profit = Math.max(Math.abs(gap) - 5, 0);
+        profit = Math.max(Math.abs(gap) - TRESHOLD_GAP, 0);
+
+        profitOnBuy = Math.max(gap, -5f);
+        profitOnSell = Math.max(-gap, -5f);
     }
 
     @Override
@@ -37,7 +45,7 @@ public class Gap {
         return format(gap);
     }
 
-    protected String format(Float f) {
+    public static String format(Float f) {
         // 4 stands for potential minus sign, 2 digits and decimal point
         return String.format("%1$" + (FRACTION_DIGITS + 4) + "s", f == null ? f : df.format(f));
     }

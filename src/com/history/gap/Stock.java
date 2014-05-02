@@ -2,6 +2,8 @@ package com.history.gap;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 /**
@@ -10,21 +12,35 @@ import java.util.List;
  */
 public class Stock {
 
-    public static final String newline = System.getProperty("line.separator");
+    public static final String NEW_LINE = System.getProperty("line.separator");
+
+    public static final int AVERAGE_INDEX = 0;
+    public static final int STANDARD_DEVIATION_INDEX = 1;
+
+    public static final int GAP_INDEX = 0;
+    public static final int PROFIT_INDEX = 1;
+    public static final int PROFIT_ON_BUY_INDEX = 2;
+    public static final int PROFIT_ON_SELL_INDEX = 3;
+    public static final int SD_HIGH_INDEX = 4;
+    public static final int SD_LOW_INDEX = 5;
+    public static final int SD_CLOSE_INDEX = 6;
+    public static final int SD_MAX_PROFIT_INDEX = 7;
+    public static final int SD_MAX_LOSS_INDEX = 8;
+    public static final int SD_PROFIT_IN_CLOSE_INDEX = 9;
 
     final String name;
 
-    private List<Gap> gaps = new ArrayList<>();
+    private final List<Gap> gaps = new ArrayList<>();
 
-    private float averageGap = 0;
+    /**
+     * Float[i][j]:
+     * - i from 0 to 9: gap, profit, profitOnBuy, profitOnSell, sdHighInP, sdLowInP, sdCloseInP, sdMaxP, sdMaxL, sdProfitInC
+     * - j from 0 to (gaps.size() + 1) - first two numbers are average and standard deviation
+     */
+    private Float[][] gapsResults;
 
     public Stock(String name) {
         this.name = name;
-    }
-
-    public Stock(String name, List<Gap> gaps) {
-        this.name = name;
-        this.gaps = gaps;
     }
 
     public void addGap(Gap gap) {
@@ -35,54 +51,91 @@ public class Stock {
         return Collections.unmodifiableList(gaps);
     }
 
-    /**
-     * Compute expected profit in % (single profit = max(|gap| - 5, 0))
-     */
-    public float getAverageProfit() {
-        float result = 0;
-        for (Gap gap : gaps) {
-            result += gap.profit;
+    private void computeGapsResults() {
+        if (gapsResults != null) {
+            return;
         }
-        result = result / gaps.size();
-        return result;
-    }
+        gapsResults = new Float[10][gaps.size() + 2];
+        // first two indices are reserved for average and standard deviation
+        int j = 1;
+        for (Gap gap : gaps) {
+            j++;
+            gapsResults[GAP_INDEX][j] = gap.gap;
+            gapsResults[PROFIT_INDEX][j] = gap.profit;
+            gapsResults[PROFIT_ON_BUY_INDEX][j] = gap.profitOnBuy;
+            gapsResults[PROFIT_ON_SELL_INDEX][j] = gap.profitOnSell;
 
-    /**
-     * @return average gap (can be negative)
-     */
-    public float getAverageGap() {
-        if (averageGap == 0) {
-            for (Gap gap : gaps) {
-                averageGap += gap.gap;
+            if (gap instanceof DetailedGap) {
+                DetailedGap dgap = (DetailedGap) gap;
+                gapsResults[SD_HIGH_INDEX][j] = dgap.sdHighInPercent;
+                gapsResults[SD_LOW_INDEX][j] = dgap.sdLowInPercent;
+                gapsResults[SD_CLOSE_INDEX][j] = dgap.sdCloseInPercent;
+                gapsResults[SD_MAX_PROFIT_INDEX][j] = dgap.sdMaxProfit;
+                gapsResults[SD_MAX_LOSS_INDEX][j] = dgap.sdMaxLoss;
+                gapsResults[SD_PROFIT_IN_CLOSE_INDEX][j] = dgap.sdProfitInClose;
             }
-            averageGap = averageGap / gaps.size();
         }
-        return averageGap;
+
+        for (int i = 0; i <= 9; i++) {
+            computeAverageAndDeviation(gapsResults[i]);
+        }
     }
 
-    public double getStandardDeviation() {
-        return Math.sqrt(getVariance());
-    }
-
-    public double getVariance() {
-        double variance = 0;
-        for (Gap gap : gaps) {
-            variance += Math.pow(gap.gap - averageGap, 2);
+    private void computeAverageAndDeviation(Float[] array) {
+        float average = 0;
+        int notNull = 0;
+        for (int i = 2; i < array.length; i++) {
+            if (array[i] != null) {
+                average += array[i];
+                notNull++;
+            }
         }
-        variance = variance / gaps.size();
-        return variance;
+        average = average/notNull;
+        array[AVERAGE_INDEX] = average;
+
+        float variance = 0;
+        for (int i = 2; i < array.length; i++) {
+            if (array[i] != null) {
+                variance += Math.pow(array[i] - average, 2);
+            }
+        }
+        variance = variance/notNull;
+        array[STANDARD_DEVIATION_INDEX] = new Float(Math.sqrt(variance));
     }
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(name).append(newline);
-        sb.append("Gaps:").append(newline);
+        computeGapsResults();
+        StringBuilder sb = new StringBuilder(name).append(NEW_LINE);
+        sb.append("Gaps:").append(NEW_LINE);
         for (Gap gap : gaps) {
-            sb.append(gap.toString()).append(newline);
+            sb.append(gap.toString()).append(NEW_LINE);
         }
-        sb.append("Average profit: ").append(getAverageProfit()).append(newline);
-        sb.append("Average gap: ").append(getAverageGap()).append(newline);
-        // sb.append("Standard deviation (gap): ").append(getStandardDeviation()).append(newline);
+        sb.append(NEW_LINE);
+        sb.append("Average gap: ").append(NEW_LINE).append(averageValuesToString()).append(NEW_LINE);
+        sb.append("Standard deviation: ").append(NEW_LINE).append(standardDeviationValuesToString()).append(NEW_LINE);
+
+        sb.append(NEW_LINE);
+        sb.append("Average profit on buy: ").append(gapsResults[2][0]).append(NEW_LINE);
+        sb.append("Average profit on sell: ").append(gapsResults[3][0]).append(NEW_LINE);
+
+        sb.append(NEW_LINE);
+        sb.append("Average profit on gap: ").append(gapsResults[1][0]).append(NEW_LINE);
+
         return sb.toString();
+    }
+
+    private String averageValuesToString() {
+        return statisticValuesToString(AVERAGE_INDEX);
+    }
+
+    private String standardDeviationValuesToString() {
+        return statisticValuesToString(STANDARD_DEVIATION_INDEX);
+    }
+
+    private String statisticValuesToString(int index) {
+        return Gap.format(gapsResults[0][index]) + DetailedGap.dateToString(new Date(0, 0, 1), new Date(0, 0, 1)) +
+                DetailedGap.getHLCtoString(gapsResults[SD_HIGH_INDEX][index], gapsResults[SD_LOW_INDEX][index], gapsResults[SD_CLOSE_INDEX][index]) +
+                DetailedGap.getGainLossCloseProfitToString(gapsResults[SD_MAX_PROFIT_INDEX][index], gapsResults[SD_MAX_LOSS_INDEX][index], gapsResults[SD_PROFIT_IN_CLOSE_INDEX][index]);
     }
 }
