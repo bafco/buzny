@@ -2,8 +2,6 @@ package com.history.gap;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 /**
@@ -27,6 +25,8 @@ public class Stock {
     public static final int SD_MAX_PROFIT_INDEX = 7;
     public static final int SD_MAX_LOSS_INDEX = 8;
     public static final int SD_PROFIT_IN_CLOSE_INDEX = 9;
+    public static final int SD_TOTAL_INDEX = 10;
+    public static final int MAX_INDEX = SD_TOTAL_INDEX;
 
     final String name;
 
@@ -34,7 +34,7 @@ public class Stock {
 
     /**
      * Float[i][j]:
-     * - i from 0 to 9: gap, profit, profitOnBuy, profitOnSell, sdHighInP, sdLowInP, sdCloseInP, sdMaxP, sdMaxL, sdProfitInC
+     * - i from 0 to MAX_INDEX: gap, profit, profitOnBuy, profitOnSell, sdHighInP, sdLowInP, sdCloseInP, sdMaxP, sdMaxL, sdProfitInC, sdTotal
      * - j from 0 to (gaps.size() + 1) - first two numbers are average and standard deviation
      */
     private Float[][] gapsResults;
@@ -55,7 +55,7 @@ public class Stock {
         if (gapsResults != null) {
             return;
         }
-        gapsResults = new Float[10][gaps.size() + 2];
+        gapsResults = new Float[MAX_INDEX + 1][gaps.size() + 2];
         // first two indices are reserved for average and standard deviation
         int j = 1;
         for (Gap gap : gaps) {
@@ -73,10 +73,11 @@ public class Stock {
                 gapsResults[SD_MAX_PROFIT_INDEX][j] = dgap.sdMaxProfit;
                 gapsResults[SD_MAX_LOSS_INDEX][j] = dgap.sdMaxLoss;
                 gapsResults[SD_PROFIT_IN_CLOSE_INDEX][j] = dgap.sdProfitInClose;
+                gapsResults[SD_TOTAL_INDEX][j] = dgap.sdTotal;
             }
         }
 
-        for (int i = 0; i <= 9; i++) {
+        for (int i = 0; i <= MAX_INDEX; i++) {
             computeAverageAndDeviation(gapsResults[i]);
         }
     }
@@ -134,8 +135,9 @@ public class Stock {
     }
 
     private String statisticValuesToString(int index) {
-        return Gap.format(gapsResults[0][index]) + DetailedGap.dateToString(new Date(0, 0, 1), new Date(0, 0, 1)) +
+        return Gap.format(gapsResults[0][index]) + DetailedGap.exampleDateToString() +
                 DetailedGap.getHLCtoString(gapsResults[SD_HIGH_INDEX][index], gapsResults[SD_LOW_INDEX][index], gapsResults[SD_CLOSE_INDEX][index]) +
-                DetailedGap.getGainLossCloseProfitToString(gapsResults[SD_MAX_PROFIT_INDEX][index], gapsResults[SD_MAX_LOSS_INDEX][index], gapsResults[SD_PROFIT_IN_CLOSE_INDEX][index]);
+                DetailedGap.getGainLossCloseProfitToString(gapsResults[SD_MAX_PROFIT_INDEX][index], gapsResults[SD_MAX_LOSS_INDEX][index], gapsResults[SD_PROFIT_IN_CLOSE_INDEX][index]) +
+                DetailedGap.getSDTotalToString(gapsResults[SD_TOTAL_INDEX][index]);
     }
 }
