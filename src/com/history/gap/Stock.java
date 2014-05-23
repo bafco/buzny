@@ -28,7 +28,8 @@ public class Stock {
     public static final int SD_TOTAL_INDEX = 10;
     public static final int MAX_INDEX = SD_TOTAL_INDEX;
 
-    final String name;
+    public final String name;
+    public final String symbol;
 
     private final List<Gap> gaps = new ArrayList<>();
 
@@ -41,6 +42,7 @@ public class Stock {
 
     public Stock(String name) {
         this.name = name;
+        symbol = name.substring(name.indexOf(':') + 1, name.length() - 1);
     }
 
     public void addGap(Gap gap) {

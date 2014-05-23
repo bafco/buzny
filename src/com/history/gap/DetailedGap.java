@@ -10,7 +10,7 @@ import java.util.Date;
 public class DetailedGap  extends Gap {
 
     // if gap is less than abs(TRESHOLD) (in %), second day profit/loss is irrelevant and set to null
-    public static final float TRESHOLD = 5;
+    public static final float TRESHOLD = 2;
     public static final boolean SHOW_DATE = false;
 
     public static final SimpleDateFormat SDF = new SimpleDateFormat("dd/MM/yyyy");

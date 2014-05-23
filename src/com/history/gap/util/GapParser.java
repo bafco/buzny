@@ -1,5 +1,8 @@
-package com.history.gap;
+package com.history.gap.util;
 
+import com.history.gap.DetailedGap;
+import com.history.gap.Gap;
+import com.history.gap.Stock;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -14,6 +17,11 @@ import java.util.Locale;
  */
 public class GapParser {
 
+    public static final String FILES_LOCATION = "D:\\buzny\\";
+    public static final String TXT = ".txt";
+
+    private static final String TAB = "\t";
+
     private static final int DATE = 0;
     private static final int OPEN = 1;
     private static final int HIGH = 2;
@@ -22,18 +30,20 @@ public class GapParser {
 
     private static final int ROW_LENGTH = 7;
 
-    private static final String TAB = "\t";
-
     private GapParser() {
     }
 
-    public static Stock generateStockFromFile(String fileName, boolean detailed) {
+    public static Stock generateStockFromStockName(String stockName, boolean detailed) {
+        return generateStockFromFileName(FILES_LOCATION + stockName + TXT, detailed);
+    }
+
+    public static Stock generateStockFromFileName(String fileName, boolean detailed) {
         try {
             BufferedReader input = new BufferedReader(new FileReader(fileName));
             String name = input.readLine();
             Stock stock = new Stock(name);
             input.readLine();
-            
+
             String line1;
             String line2;
             Gap gap;
