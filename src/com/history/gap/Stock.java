@@ -14,6 +14,8 @@ public class Stock {
 
     public static final int AVERAGE_INDEX = 0;
     public static final int STANDARD_DEVIATION_INDEX = 1;
+    // first two indices are reserved for average and standard deviation
+    public static final int NUMBER_OF_INDICES_RESERVED = 2;
 
     public static final int GAP_INDEX = 0;
     public static final int PROFIT_INDEX = 1;
@@ -57,9 +59,8 @@ public class Stock {
         if (gapsResults != null) {
             return;
         }
-        gapsResults = new Float[MAX_INDEX + 1][gaps.size() + 2];
-        // first two indices are reserved for average and standard deviation
-        int j = 1;
+        gapsResults = new Float[MAX_INDEX + 1][NUMBER_OF_INDICES_RESERVED + gaps.size()];
+        int j = NUMBER_OF_INDICES_RESERVED - 1;
         for (Gap gap : gaps) {
             j++;
             gapsResults[GAP_INDEX][j] = gap.gap;
@@ -87,7 +88,7 @@ public class Stock {
     private void computeAverageAndDeviation(Float[] array) {
         float average = 0;
         int notNull = 0;
-        for (int i = 2; i < array.length; i++) {
+        for (int i = NUMBER_OF_INDICES_RESERVED; i < array.length; i++) {
             if (array[i] != null) {
                 average += array[i];
                 notNull++;
@@ -97,7 +98,7 @@ public class Stock {
         array[AVERAGE_INDEX] = average;
 
         float variance = 0;
-        for (int i = 2; i < array.length; i++) {
+        for (int i = NUMBER_OF_INDICES_RESERVED; i < array.length; i++) {
             if (array[i] != null) {
                 variance += Math.pow(array[i] - average, 2);
             }

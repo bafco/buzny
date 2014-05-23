@@ -12,8 +12,11 @@ public class Main {
     private static final boolean DETAILED = true;
 
     public static void main(String[] args) {
+        showInfoForStock("arun");
         ReportGenerator.generateReport();
-        Stock stock = GapParser.generateStockFromStockName("arun", DETAILED);
-        System.out.println(stock);
+    }
+
+    private static void showInfoForStock(String symbol) {
+        System.out.println(GapParser.generateStockFromStockName(symbol, DETAILED));
     }
 }
