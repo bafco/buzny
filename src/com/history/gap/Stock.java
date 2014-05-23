@@ -40,7 +40,7 @@ public class Stock {
      * - i from 0 to MAX_INDEX: gap, profit, profitOnBuy, profitOnSell, sdHighInP, sdLowInP, sdCloseInP, sdMaxP, sdMaxL, sdProfitInC, sdTotal
      * - j from 0 to (gaps.size() + 1) - first two numbers are average and standard deviation
      */
-    private Float[][] gapsResults;
+    public Float[][] gapsResults;
 
     public Stock(String name) {
         this.name = name;
@@ -55,7 +55,7 @@ public class Stock {
         return Collections.unmodifiableList(gaps);
     }
 
-    private void computeGapsResults() {
+    public void computeGapsResults() {
         if (gapsResults != null) {
             return;
         }

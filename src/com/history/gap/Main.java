@@ -12,8 +12,9 @@ public class Main {
     private static final boolean DETAILED = true;
 
     public static void main(String[] args) {
-        showInfoForStock("arun");
-        ReportGenerator.generateReport();
+//        showInfoForStock("arun");
+//        ReportGenerator.generateReport();
+        ReportGenerator.generateStatistics();
     }
 
     private static void showInfoForStock(String symbol) {
